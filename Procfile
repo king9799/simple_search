@@ -1,0 +1,1 @@
+web: gunicorn Simple_ajax_search_with_django.wsgi --log-file -
