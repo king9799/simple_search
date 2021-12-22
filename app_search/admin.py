@@ -7,3 +7,8 @@ from .models import *
 @admin.register(Question)
 class QuestionAdmin(ImportExportModelAdmin):
     list_display = ['question', 'answer']
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    pass

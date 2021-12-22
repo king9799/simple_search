@@ -17,5 +17,7 @@ from django.urls import path
 from app_search import views
 
 urlpatterns = [
-    path('', views.home, name='home')
+    path('', views.log_in, name='login'),
+    path('home/', views.home, name='home'),
+    path('close/', views.close_url, name='exit')
 ]
