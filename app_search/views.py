@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import *
 import datetime
 import random
+from django.contrib.auth import login, authenticate
 # Create your views here.
 
 
@@ -30,30 +31,33 @@ def home(request):
 
 
 def log_in(request):
-    user = User.objects.get(user=f'user{request.user.id}')
-    if len(User.objects.filter(user=f'user{request.user.id}')) == 0:
-        create_user = User.objects.create(
-            user=f'user{request.user.id}',
-            promo_cod=str(random.randint(100000, 999999))
-        )
-        create_user.save()
-    elif user.promo_cod == '':
-        user.promo_cod = str(random.randint(100000, 999999))
-        user.save()
-    if user.key == False:
-        if request.method == 'POST':
-            print(user.key)
-            if 'key' in request.POST:
-                print('key')
-                key = request.POST['key']
-                if key == user.promo_cod:
-                    user.key = True
-                    user.save()
-                return redirect('/home')
-        elif request.method == 'GET':
-            return render(request, 'login.html', {'user_key': user.promo_cod[::-1]})
-    else:
-        return redirect('/home')
+    user = authenticate(username='kingpc', password='king')
+    if user is not None:
+        login(request, user)
+        user = User.objects.get(user=f'user{request.user.id}')
+        if len(User.objects.filter(user=f'user{request.user.id}')) == 0:
+            create_user = User.objects.create(
+                user=f'user{request.user.id}',
+                promo_cod=str(random.randint(100000, 999999))
+            )
+            create_user.save()
+        elif user.promo_cod == '':
+            user.promo_cod = str(random.randint(100000, 999999))
+            user.save()
+        if user.key == False:
+            if request.method == 'POST':
+                print(user.key)
+                if 'key' in request.POST:
+                    print('key')
+                    key = request.POST['key']
+                    if key == user.promo_cod:
+                        user.key = True
+                        user.save()
+                    return redirect('/home')
+            elif request.method == 'GET':
+                return render(request, 'login.html', {'user_key': user.promo_cod[::-1]})
+        else:
+            return redirect('/home')
 
 
 def close_url(request):
